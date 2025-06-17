@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythmic Threads - User Profile</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* General styling */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+    }
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 60px 80px;
+        background-color: #f0f0f0;
+        position: relative;
+        z-index: 5;
+    }
+    .hamburger {
+        font-size: 50px;
+        cursor: pointer;
+        color: black;
+        margin-left: 10px;
+    }
+    nav {
+        display: none; /* Hidden by default */
+        flex-direction: column;
+        background-color: #f0f0f0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+        #nav-menu a {
+        font-size: 24px; /* Smaller size for smaller screens */
+        }
+    }
+    
+    @media (min-width: 769px) {
+        #nav-menu a {
+        font-size: 36px; /* Larger size for desktops */
+        }
+    }
+    
+    nav.show {
+        display: flex; /* Show menu when 'show' class is toggled */
+    }
+
+    .header-container img.logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        max-height: 200px;
+    }
+
+    .icon-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-right: 20px;
+    }
+
+    .icon-image {
+        height: 50px;
+        width: 50px;
+    }
+
+    /* Black-White Banner */
+    .black-whitebanner img {
+        width: 100%; /* Adjust the width as needed */
+        height: 100px;/* Maintain aspect ratio */
+        }
+
+    .black-banner {
+        background-color: black;
+        height: 40px;
+        width: 100%;
+        position: absolute;
+        top: 80px;
+        z-index: 2;
+    }
+
+    /* Centered Admin Profile */
+    .profile-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+    }
+
+    .profile-card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .profile-card h2, .profile-card p {
+      margin: 10px 0;
+    }
+
+    .profile-card .form-group {
+      text-align: left;
+    }
+
+    .profile-card button {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header-container">
+    <span class="hamburger" onclick="toggleMenu()">☰</span>
+    <img src="/images/logo.png" alt="Rhythmic Threads Logo" class="logo">
+    <div class="icon-wrapper">
+      <a href="/logout"><img src="/images/logout-icon.png" alt="Log Out" class="icon-image"></a>
+      <a href="/profile"><img src="/images/profile-icon.png" alt="Profile" class="icon-image"></a>
+    </div>
+    <nav id="nav-menu">
+      <a href="/admin">Home</a>
+      <a href="/admin/managewhatsnew">Manage What's New</a>
+      <a href="/admin/manageclothes">Manage Clothes</a>
+      <a href="/admin/managevinyls">Manage Vinyls</a>
+      <a href="/admin/manageuser">Manage User</a>
+      <a href="/admin/viewtransactions">View Transactions</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+
+  <!-- Banner -->
+  <div class="black-whitebanner">
+    <img src="/images/blackwhite-banner.png" alt="What's New">
+  </div>
+
+  <!-- Profile Section -->
+  <div class="profile-container">
+    <div class="profile-card">
+      <header>
+        <h1>Admin Profile</h1>
+      </header>
+      <main>
+        <h2>Welcome, <%= admin.username %></h2>
+        <p><strong>Email:</strong> <%= admin.userEmail %></p>
+        <p><strong>Password:</strong> <%= admin.userPassword %></p>
+        <p><strong>Role:</strong> <%= admin.userRole %></p>
+      </main>
+      <!-- Update Profile Section -->
+      <div class="container">
+        <h2>Update Your Profile</h2>
+        <form action="/admin/profile/update" method="POST">
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="<%= admin.username %>" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="<%= admin.userEmail %>" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" value="<%= admin.userPassword %>" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const navMenu = document.getElementById("nav-menu");
+      navMenu.classList.toggle("show");
+    }
+  </script>
+</body>
+</html>

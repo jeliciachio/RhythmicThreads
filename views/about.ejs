@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - Rhythmic Threads</title>
+  <style>
+    /* General styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 80px;
+      background-color: #f0f0f0;
+      position: relative;
+      z-index: 5;
+    }
+  
+    .hamburger {
+      font-size: 50px;
+      cursor: pointer;
+      color: black;
+      margin-left: 10px;
+    }
+  
+    nav {
+      display: none; /* Hidden by default */
+      flex-direction: column;
+      background-color: #f0f0f0;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+      #nav-menu a {
+        font-size: 24px; /* Smaller size for smaller screens */
+      }
+    }
+    
+    @media (min-width: 769px) {
+      #nav-menu a {
+        font-size: 36px; /* Larger size for desktops */
+      }
+    }
+  
+  
+    
+    nav.show {
+      display: flex; /* Show menu when 'show' class is toggled */
+    }
+  
+    .header-container img.logo {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      max-height: 200px;
+    }
+  
+    .icon-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-right: 20px;
+    }
+  
+    .icon-image {
+      height: 50px;
+      width: 50px;
+    }
+  
+    /* Black-White Banner */
+    .black-whitebanner img {
+      width: 100%; /* Adjust the width as needed */
+      height: 100px;/* Maintain aspect ratio */
+      }
+  
+    .black-banner {
+      background-color: black;
+      height: 40px;
+      width: 100%;
+      position: absolute;
+      top: 80px;
+      z-index: 2;
+    }
+  
+
+    /* About Us Section */
+    .about-section {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-around; /* Align content to fill space */
+      padding: 60px; /* Increased padding for better spacing */
+      margin: 40px auto;
+      max-width: 1600px; /* Allow the section to take up more width */
+    }
+    
+    .about-text {
+      flex: 1;
+      margin: 20px;
+      font-size: 28px; /* Increased text size */
+      line-height: 2; /* Adjusted line spacing for readability */
+      text-align: justify;
+    }
+    
+    .about-images {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px; /* Increased gap between images */
+    }
+    
+    .about-images img {
+      width: 100%; /* Images fill their container */
+      max-width: 700px; /* Increased maximum width for larger displays */
+      height: auto; /* Maintain aspect ratio */
+      border-radius: 10px;
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow for emphasis */
+    }
+    
+    /* Follow Us Section */
+    .follow-section {
+      text-align: center;
+      margin: 40px 0; /* Increased spacing */
+    }
+    
+    .follow-section h1 {
+      font-size: 30px; /* Larger heading */
+    }
+    
+    .follow-icons {
+      display: flex;
+      justify-content: center;
+      gap: 30px; /* Spacing between icons */
+      margin-top: 20px;
+    }
+    
+    .follow-icons img {
+      width: 60px; /* Increased size of social media icons */
+      height: auto;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .about-section {
+        flex-direction: column; /* Stack images and text for smaller screens */
+        text-align: center;
+      }
+    
+      .about-text {
+        font-size: 22px; /* Adjusted text size for smaller screens */
+      }
+    
+      .about-images img {
+        width: 100%; /* Full width on smaller devices */
+        max-width: 100%; /* Ensure images are not cropped */
+      }
+    }
+    
+
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header-container">
+    <span class="hamburger" onclick="toggleMenu()">☰</span>
+    <img src="/images/logo.png" alt="Rhythmic Threads Logo" class="logo">
+    <div class="icon-wrapper">
+      <a href="/profile"><img src="/images/profile-icon.png" alt="Profile" class="icon-image"></a>
+      <a href="/cart"><img src="/images/cart-icon.png" alt="Cart" class="icon-image"></a>
+    </div>
+    <nav id="nav-menu">
+      <a href="/user">Home</a>
+      <a href="/products/whatsnew">What's New</a>
+      <a href="/products/clothes">Clothes</a>
+      <a href="/products/vinyls">Vinyls</a>
+      <a href="/about">About Us</a>
+      <a href="/location">Location</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+
+  <!-- Black-White Banner -->
+  <div class="black-whitebanner">
+    <img src="/images/blackwhite-banner.png" alt="Black White Banner">
+  </div>
+
+
+  <!-- About Us Section -->
+  <section class="about-section">
+    <div class="about-images">
+      <img src="/images/aboutpage.png" alt="About Us ">
+    </div>
+    <div class="about-text">
+      <p>
+        Rhythmic Threads is a thrift shop specializing in hand-picked vintage items and vinyl records, curated especially for music lovers. 
+        Each item is carefully selected to help individuals express their unique vibe and identity, making it easy to stand out from the crowd. 
+        We believe fashion should be fun, creative, and personal, and we are dedicated to offering pieces that are as distinctive as you are.
+      </p>
+    </div>
+  </section>
+
+  <!-- Follow Us Section -->
+  <section class="follow-section">
+    <h1>Follow Us</h1>
+    <p>Stay up-to-date with our latest arrivals and special promotions by following us on social media:</p>
+    <div class="follow-icons">
+      <a href="https://www.instagram.com/rhythmicthreads">
+        <img src="/images/instagram_logo.png" alt="Instagram">
+      </a>
+      <a href="https://www.tiktok.com/rhythmicthreads">
+        <img src="/images/tiktok.jpg" alt="TikTok">
+      </a>
+    </div>
+  </section>
+
+  <script>
+    function toggleMenu() {
+      const navMenu = document.getElementById("nav-menu");
+      navMenu.classList.toggle("show");
+    }
+  </script>
+</body>
+</html>

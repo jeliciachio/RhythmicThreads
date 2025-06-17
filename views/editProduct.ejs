@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+<style>
+    /* General styling */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+    }
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 60px 80px;
+        background-color: #f0f0f0;
+        position: relative;
+        z-index: 5;
+    }
+
+    .hamburger {
+        font-size: 50px;
+        cursor: pointer;
+        color: black;
+        margin-left: 10px;
+    }
+
+    nav {
+        display: none; /* Hidden by default */
+        flex-direction: column;
+        background-color: #f0f0f0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+        #nav-menu a {
+        font-size: 24px; /* Smaller size for smaller screens */
+        }
+    }
+    
+    @media (min-width: 769px) {
+        #nav-menu a {
+        font-size: 36px; /* Larger size for desktops */
+        }
+    }
+    
+    nav.show {
+        display: flex; /* Show menu when 'show' class is toggled */
+    }
+
+    .header-container img.logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        max-height: 200px;
+    }
+
+    .icon-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-right: 20px;
+    }
+
+    .icon-image {
+        height: 50px;
+        width: 50px;
+    }
+
+    /* Black-White Banner */
+    .black-whitebanner img {
+        width: 100%; /* Adjust the width as needed */
+        height: 100px;/* Maintain aspect ratio */
+        }
+
+    .black-banner {
+        background-color: black;
+        height: 40px;
+        width: 100%;
+        position: absolute;
+        top: 80px;
+        z-index: 2;
+    }
+    /* Styles similar to clothes.ejs */
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        margin: 10px 0 5px;
+    }
+    .form-container {
+        width: 40%; /* Reduce width slightly for better centering */
+        min-width: 500px; /* Ensure it doesn’t get too small */
+        margin: 40px auto; /* Center it properly */
+        padding: 30px;
+        background: white;
+        border-radius: 8px; /* Adds rounded corners */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+    
+    input, textarea, select {
+        width: 100%;
+        max-width: 500px; /* Make inputs slightly larger */
+        padding: 10px; /* Improve spacing */
+        border: 1px solid #ccc;
+        border-radius: 5px; /* Smooth edges */
+        font-size: 16px;
+    }
+    
+    button {
+        width: 150px;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    
+    button:hover {
+        background-color: #0056b3;
+    }
+            
+</style>
+    </head>
+    <body>
+    <!-- Header -->
+    <header class="header-container">
+        <span class="hamburger" onclick="toggleMenu()">☰</span>
+        <img src="/images/logo.png" alt="Rhythmic Threads Logo" class="logo">
+        <div class="icon-wrapper">
+        <a href="/profile"><img src="/images/profile-icon.png" alt="Profile" class="icon-image"></a>
+        
+        </div>
+        <nav id="nav-menu">
+        <a href="/admin">Home</a>
+        <a href="/admin/managewhatsnew">Manage What's New</a>
+        <a href="/admin/manageclothes">Manage Clothes</a>
+        <a href="/admin/managevinyls">Manage Vinyls</a>
+        <a href="/admin/manageuser">Manage User</a>
+        <a href="/admin/viewtransactions">View Transactions</a>
+        <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+
+        <!-- Banner -->
+    <div class="black-whitebanner">
+        <img src="/images/blackwhite-banner.png" alt="What's New">
+    </div>
+
+<body>
+    <div class="form-container">
+        <h2>Edit <%= type %></h2>
+        <form action="/admin/editproduct/<%= item.id || item.clothingId || item.vinylId %>/<%= type %>" method="POST" enctype="multipart/form-data">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="<%= item?.name || '' %>" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required><%= item.description || '' %></textarea>
+
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" step="0.01" value="<%= item.price || 0.00 %>" required>
+
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" name="stock" value="<%= item.stock || 0 %>" required>
+
+            <label for="category">Category:</label>
+            <select id="category" name="categoryId" required>
+                <% categories.forEach((category) => { %>
+                    <option value="<%= category.categoryId %>" <%= item.categoryId === category.categoryId ? 'selected' : '' %>>
+                        <%= category.categoryName %>
+                    </option>
+                <% }) %>
+            </select>
+
+            <label for="productfilter">Filter:</label>
+            <select id="productfilter" name="productfilter" required>
+                <% if (filters.length === 0) { %>
+                    <option disabled>No filters available</option>
+                <% } else { %>
+                    <% filters.forEach(filter => { %>
+                        <option value="<%= filter %>" <%= item.productfilter === filter ? 'selected' : '' %>>
+                            <%= filter %>
+                        </option>
+                    <% }) %>
+                <% } %>
+            </select>
+
+            <label>Current Image:</label>
+            <% if (item.image || item.clothingImage || item.vinylImage) { %>
+                <img src="/uploads/<%= item.image || item.clothingImage || item.vinylImage %>" alt="Current Product Image" style="max-width: 200px;">
+            <% } else { %>
+                <p>No image available.</p>
+            <% } %>
+            
+            <label for="image">Upload New Image (optional):</label>
+            <input type="file" id="image" name="image" accept="image/*">
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const navMenu = document.getElementById("nav-menu");
+            navMenu.classList.toggle("show");
+        }
+    </script>
+</body>
+</html>

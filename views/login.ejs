@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythmic Threads - User Page</title>
+  <link rel="stylesheet" href="/styles.css">
+<style>
+    /* General styling */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+    }
+
+    /* Header styling */
+    header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+        padding: 20px;
+    }
+
+    header img {
+        max-height: 200px;
+        height: auto;
+    }
+
+    /* Black-White Banner */
+    .black-whitebanner img {
+        width: 100%;
+        height: 80px;
+    }
+
+    /* Login form container */
+    .container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .input-container {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-container i {
+        margin-right: 10px;
+    }
+
+    .input-container input {
+        width: calc(100% - 30px);
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .login-button {
+        padding: 10px;
+        background-color: #333;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .login-button:hover {
+        background-color: #555;
+    }
+
+    .footer {
+        margin-top: 20px;
+    }
+
+    .footer a {
+        color: #333;
+        text-decoration: none;
+    }
+
+    .footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+<header>
+    <img src="/images/logo.png" alt="Rhythmic Threads Logo">
+</header>
+<!-- Main content -->
+<div class="black-whitebanner">
+    <img src="/images/blackwhite-banner.png" alt="Black and white banner">
+</div>
+
+<div class="container">
+    <h2>Rhythmic Threads Login</h2>
+    <form action="/login" method="POST">
+        <div class="input-container">
+            <i>👤</i>
+            <input type="text" name="username" placeholder="Enter your username here" required>
+        </div>
+        <div class="input-container">
+            <i>🔒</i>
+            <input type="password" name="password" placeholder="Enter your password here" required>
+        </div>
+        <button class="login-button" type="submit">Login ➔</button>
+    </form>
+    <div class="footer">
+        <p>Don't have an account? <a href="/signup" >Sign up</a></p>
+    </div>
+</div>
+</body>
+</html>

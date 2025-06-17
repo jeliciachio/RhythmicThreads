@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythmic Threads - Sign Up</title>
+  <link rel="stylesheet" href="/styles.css">
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythmic Threads - User Page</title>
+  <link rel="stylesheet" href="/styles.css">
+<style>
+    /* General styling */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+    }
+
+    /* Header styling */
+    header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+        padding: 20px;
+    }
+
+    header img {
+        max-height: 200px;
+        height: auto;
+    }
+
+    /* Black-White Banner */
+    .black-whitebanner img {
+        width: 100%;
+        height: 80px;
+    }
+    .container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+    }
+    .input-container {
+        margin-bottom: 15px;
+    }
+    .input-container i {
+        margin-right: 10px;
+    }
+    .input-container input, .input-container select {
+        width: calc(100% - 30px);
+        padding: 10px;
+        box-sizing: border-box;
+    }
+    .sign-up-button {
+        padding: 10px;
+        background-color: #333;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .sign-up-button:hover {
+        background-color: #555;
+    }
+    .footer {
+        margin-top: 20px;
+    }
+    .footer a {
+        color: #333;
+        text-decoration: none;
+    }
+    .footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+<script>
+    function validateForm() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return false;
+        }
+        return true;
+    }
+</script>
+</head>
+<header>
+    <img src="/images/logo.png" alt="Rhythmic Threads Logo">
+</header>
+<body>
+<!-- Main content -->
+<div class="black-whitebanner">
+    <img src="/images/blackwhite-banner.png" alt="Black and white banner">
+</div>
+</main>
+<div class="container">
+    <h2>Sign Up</h2>
+    <form action="/signup" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <div class="input-container">
+            <i>👤</i>
+            <input type="text" name="username" placeholder="Enter your username here" required>
+        </div>
+        <div class="input-container">
+            <i>📧</i>
+            <input type="email" name="email" placeholder="Enter your email here" required>
+        </div>
+        <div class="input-container">
+            <i>🔒</i>
+            <input type="password" id="password" name="password" placeholder="Password must be 5-7 characters long and include at least one special character." required>
+        </div>
+        <div class="input-container">
+            <i>🔒</i>
+            <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+        </div>
+        <div class="input-container">
+            <label for="role">Choose a role:</label>
+            <select name="role" id="role" required>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        <div class="input-container">
+            <label for="image">Upload Profile Image:</label>
+            <input type="file" name="image" id="image">
+        </div>
+
+        <button class="sign-up-button" type="submit">Sign Up ➔</button>
+    </form>
+    <div class="footer">
+        <p>Already have an account? <a href="/login">Log in</a></p>
+    </div>
+</div>
+</body>
+</html>

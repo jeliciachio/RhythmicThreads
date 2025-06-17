@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhythmic Threads - User Page</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        /* Header */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background-color: white;
+            position: relative;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto;
+            max-height: 200px;
+        }
+
+        .icon-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-image {
+            height: 40px;
+            width: 40px;
+        }
+        /* Black-White Banner */
+        .black-whitebanner img {
+            width: 100%; /* Adjust the width as needed */
+            height: 100px;/* Maintain aspect ratio */
+            object-fit: cover; /* Ensure the image covers the area */
+        }
+
+        .black-banner {
+            background-color: black;
+            height: 40px;
+            width: 100%;
+            position: absolute;
+            top: 80px;
+            z-index: 2;
+        }
+
+        /* Order Summary Card */
+        .order-summary {
+            max-width: 700px; /* Smaller width */
+            margin: 20px auto; /* Centered */
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-summary h2 {
+            font-size: 22px;
+            text-align: center;
+        }
+
+        .table {
+            font-size: 14px;
+        }
+
+        /* Total Amount */
+        .total-amount {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* NETS Button Container */
+        .nets-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        /* PayPal Button Container */
+        .paypal-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-container"></header>
+            <img src="/images/logo.png" alt="Rhythmic Threads Logo" class="logo">
+    </header>
+    <!-- Black-White Banner -->
+<div class="black-whitebanner">
+    <img src="/images/blackwhite-banner.png" alt="Black White Banner">
+</div>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <h2>Order Summary</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% cartItems.forEach(item => { %>
+                        <tr>
+                            <td><%= item.productName %></td>
+                            <td><%= item.itemType %></td>
+                            <td><%= item.quantity %></td>
+                            <td>$<%= Number(item.itemPrice).toFixed(2) %></td>
+                            <td>$<%= (item.quantity * item.itemPrice).toFixed(2) %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <p class="total-amount">Total Amount: <strong>$<%= totalAmount.toFixed(2) %></strong></p>
+    </div>
+    <!-- NETS Payment -->
+     <div class="nets-container">
+        <form action="/generateNETSQR" method="POST">
+            <input type="hidden" name="cartProducts" value='<%- JSON.stringify(cartItems) %>'>
+            <input type="hidden" name="totalAmount" value="<%= totalAmount.toFixed(2) %>">
+            <button type="submit" class="btn btn-primary">Pay with NETS</button>
+        </form>
+    </div>
+    <!-- PayPal Payment -->
+    <div class="paypal-container">
+        <div id="paypal-button-container"></div>
+        <input type="hidden" id="cartProducts" value='<%- JSON.stringify(cartItems) %>'>
+    </div>
+    <script src="https://www.paypal.com/sdk/js?client-id=ARRqLPeH8SOSWP1Q2OeiiVScAXQuiJaOYzavA9LUVXws5PsraH7wewUZEIIjg19EyKvSsRac8lNSZnJh&components=buttons,funding-eligibility&enable-funding=paylater,card&currency=SGD"></script>
+    <script src="/js/paypal.js"></script>
+</body>
+</html>

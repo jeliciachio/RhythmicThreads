@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythmic Threads - Transactions</title>
+  <link rel="stylesheet" href="/styles.css">
+<style>
+  /* General styling */
+  body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+  }
+
+  .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 80px;
+      background-color: #f0f0f0;
+      position: relative;
+      z-index: 5;
+  }
+
+  .hamburger {
+      font-size: 50px;
+      cursor: pointer;
+      color: black;
+      margin-left: 10px;
+  }
+
+  nav {
+      display: none; /* Hidden by default */
+      flex-direction: column;
+      background-color: #f0f0f0;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 20px;
+  }
+
+  @media (max-width: 768px) {
+      #nav-menu a {
+      font-size: 24px; /* Smaller size for smaller screens */
+      }
+  }
+  
+  @media (min-width: 769px) {
+      #nav-menu a {
+      font-size: 36px; /* Larger size for desktops */
+      }
+  }
+  
+  nav.show {
+      display: flex; /* Show menu when 'show' class is toggled */
+  }
+
+  .header-container img.logo {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      max-height: 200px;
+  }
+
+  .icon-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-right: 20px;
+  }
+
+  .icon-image {
+      height: 50px;
+      width: 50px;
+  }
+
+  /* Black-White Banner */
+  .black-whitebanner img {
+      width: 100%; /* Adjust the width as needed */
+      height: 100px;/* Maintain aspect ratio */
+      }
+
+  .black-banner {
+      background-color: black;
+      height: 40px;
+      width: 100%;
+      position: absolute;
+      top: 80px;
+      z-index: 2;
+  }
+
+    /* Back Button Styling */
+    .back-button {
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .back-button a {
+      text-decoration: none;
+      font-size: 16px;
+      color: #333;
+      padding: 10px 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+
+    .back-button a:hover {
+      background-color: #e0e0e0;
+    }
+
+    /* Main content container */
+    .main-container {
+      text-align: center;
+      margin: 0 auto;
+      max-width: 1200px;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background-color: #fff;
+      text-align: center;
+    }
+
+    table thead {
+      background-color: #333;
+      color: white;
+    }
+
+    table thead th {
+      padding: 10px;
+    }
+
+    table tbody tr {
+      border-bottom: 1px solid #ddd;
+    }
+
+    table tbody td {
+      padding: 10px;
+    }
+
+    table tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      text-align: left;
+    }
+
+    ul li {
+      margin-bottom: 5px;
+    }
+
+    /* Review Section Styling */
+    .review-container {
+      margin-top: 40px;
+      padding: 20px;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .review-container h2 {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+
+    .review-item {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+</style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header-container">
+    <span class="hamburger" onclick="toggleMenu()">☰</span>
+    <img src="/images/logo.png" alt="Rhythmic Threads Logo" class="logo">
+      <div class="icon-wrapper">
+              <a href="/logout"><img src="/images/logout-icon.png" alt="Log Out" class="icon-image"></a>
+              <a href="/admin/profile"><img src="/images/profile-icon.png" alt="Profile" class="icon-image"></a>
+          </div>
+    <nav id="nav-menu">
+      <a href="/admin">Home</a>
+      <a href="/admin/managewhatsnew">Manage What's New</a>
+      <a href="/admin/manageclothes">Manage Clothes</a>
+      <a href="/admin/managevinyls">Manage Vinyls</a>
+      <a href="/admin/manageuser">Manage User</a>
+      <a href="/admin/viewtransactions">View Transactions</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+
+  <!-- Main content -->
+  <div class="black-whitebanner">
+    <img src="/images/blackwhite-banner.png" alt="Black and white banner">
+  </div>
+
+  <div class="main-container">
+    <!-- Back Button -->
+    <div class="back-button">
+      <a href="/admin">&larr; Back to Home</a>
+    </div>
+
+    <!-- Transactions Table -->
+    <h1>All Transactions</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Transactions ID</th>
+          <th>Order ID</th>
+          <th>User ID</th>
+          <th>User Name</th>
+          <th>User Email</th>
+          <th>Date</th>
+          <th>Items Purchased</th>
+          <th>Total Amount</th>
+        </tr>
+      </thead>      
+      <tbody>
+        <% transactions.forEach(transaction => { %>
+          <tr>
+            <td><%= transaction.transactionsId %></td> <!-- Transactions ID -->
+            <td><%= transaction.orderId ? transaction.orderId : 'N/A' %></td> <!-- Order ID (Shows N/A if missing) -->
+            <td><%= transaction.userId %></td>
+            <td><%= transaction.username %></td>
+            <td><%= transaction.userEmail %></td>
+            <td><%= new Date(transaction.transactionDate).toLocaleString() %></td>
+            <td>
+              <ul>
+                <% transaction.itemsPurchased.forEach(item => { %>
+                  <li>
+                    <strong><%= item.productName || 'Unknown Product' %></strong>
+                    (<%= item.itemType %>) - Quantity: <%= item.quantity %>,
+                    Price: $<%= Number(item.itemPrice).toFixed(2) %>
+                  </li>
+                <% }) %>
+              </ul>
+            </td>
+            <td>$<%= transaction.totalAmount.toFixed(2) %></td>
+          </tr>
+        <% }) %>
+      </tbody>      
+    </table>
+    <!-- Reviews Section -->
+    <div class="review-container">
+      <h2>Reviews</h2>
+      <% if (typeof reviews !== 'undefined' && Array.isArray(reviews)) { %>
+        <% reviews.forEach(review => { %>
+          <div class="review-item">
+            <p><strong>User:</strong> <%= review.username %></p>
+            <p><%= review.comment %></p>
+            <small><em>Posted on: <%= new Date(review.createdAt).toLocaleString() %></em></small>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p>No reviews available.</p>
+      <% } %>      
+    </div>
+  </div>
+</body>
+</html>
+<script>
+  function toggleMenu() {
+    const navMenu = document.getElementById("nav-menu");
+    navMenu.classList.toggle("show");
+  }
+</script>

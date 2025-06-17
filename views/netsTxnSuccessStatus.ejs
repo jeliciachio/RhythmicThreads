@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<h1>✅ NETS QR Payment Successful</h1>
+<p>You will be redirected to your invoice page in <span id="countdown">10</span> seconds...</p>
+
+<p><a href="/invoice/<%= transactionId %>" class="btn btn-primary">View Now</a></p>
+
+
+<script>
+  const transactionId = "<%= transactionId %>";
+  let seconds = 10;
+  const countdown = document.getElementById("countdown");
+
+  const timer = setInterval(() => {
+    seconds--;
+    countdown.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(timer);
+      window.location.href = `/invoice/${transactionId}`;
+    }
+  }, 1000);
+</script>
+

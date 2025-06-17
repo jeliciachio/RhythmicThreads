@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythmic Threads - Clothes</title>
+  <link rel="stylesheet" href="/styles.css">
+<style>
+  /* General styling */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 80px;
+    background-color: #f0f0f0;
+    position: relative;
+    z-index: 5;
+  }
+
+  .hamburger {
+    font-size: 50px;
+    cursor: pointer;
+    color: black;
+    margin-left: 10px;
+  }
+
+  nav {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    background-color: #f0f0f0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  @media (max-width: 768px) {
+    #nav-menu a {
+      font-size: 24px; /* Smaller size for smaller screens */
+    }
+  }
+  
+  @media (min-width: 769px) {
+    #nav-menu a {
+      font-size: 36px; /* Larger size for desktops */
+    }
+  }
+  
+  nav.show {
+    display: flex; /* Show menu when 'show' class is toggled */
+  }
+
+  .header-container img.logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    max-height: 200px;
+  }
+
+  .icon-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-right: 20px;
+  }
+
+  .icon-image {
+    height: 50px;
+    width: 50px;
+  }
+
+  /* Black-White Banner */
+  .black-whitebanner img {
+    width: 100%; /* Adjust the width as needed */
+    height: 100px;/* Maintain aspect ratio */
+    }
+
+  .black-banner {
+    background-color: black;
+    height: 40px;
+    width: 100%;
+    position: absolute;
+    top: 80px;
+    z-index: 2;
+  }
+    /* Styles similar to clothes.ejs */
+    .product-category {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.3s ease;
+      padding: 10px;
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+    }
+    .card h3, .card p {
+      margin: 10px 0;
+    }
+    .card button {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      color: white;
+      background-color: #007bff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .card button:hover {
+      background-color: #0056b3;
+    }
+    .add-new {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .add-new:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header-container">
+    <span class="hamburger" onclick="toggleMenu()">☰</span>
+    <img src="/images/logo.png" alt="Rhythmic Threads Logo" class="logo">
+    <div class="icon-wrapper">
+      <a href="/logout"><img src="/images/logout-icon.png" alt="Log Out" class="icon-image"></a>
+      <a href="/profile"><img src="/images/profile-icon.png" alt="Profile" class="icon-image"></a>
+    </div>
+    <nav id="nav-menu">
+      <a href="/admin">Home</a>
+      <a href="/admin/managewhatsnew">Manage What's New</a>
+      <a href="/admin/manageclothes">Manage Clothes</a>
+      <a href="/admin/managevinyls">Manage Vinyls</a>
+      <a href="/admin/manageuser">Manage User</a>
+      <a href="/admin/viewtransactions">View Transactions</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+
+
+<!-- Main content -->
+<div class="black-whitebanner">
+   <img src="/images/blackwhite-banner.png" alt="Black and white banner">
+</div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1>Manage Vinyls</h1>
+    <a href="/admin/addnewproduct/Vinyls" class="add-new">Add New Vinyl</a>
+    <div class="product-category">
+        <% vinyls.forEach((item) => { %>
+          <div class="card">
+            <% if (item.image) { %>
+              <img src="/images/<%= item.image %>" alt="<%= item.name %>">
+            <% } else { %>
+              <p>No Image Available</p>
+            <% } %>
+            <h3><%= item.name %></h3>
+            <p><%= item.description %></p>
+            <p>Price: $<%= item.price.toFixed(2) %></p>
+            <p>Stock: <%= item.stock %></p>
+            <form action="/admin/editproduct/<%= item.id %>/Vinyls" method="GET">
+              <button>Edit</button>
+            </form>
+            <form action="/admin/deleteproduct/<%= item.id %>/Vinyls" method="POST">
+              <button>Delete</button>
+            </form>
+          </div>
+        <% }) %>
+      </div>
+  </div>
+</body>
+</html>
+<script>
+  function toggleMenu() {
+    const navMenu = document.getElementById("nav-menu");
+    navMenu.classList.toggle("show");
+  }
+</script>
+
