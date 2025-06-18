@@ -20,14 +20,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Set up session middleware
-app.use(
-    session({
-        secret: 'your_secret_key', // Replace with a secure key
-        resave: false,
-        saveUninitialized: true,
-        cookie: { secure: false }, // Set to true if using HTTPS
-    })
-);
+const sessionStore = new MySQLStore({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+
+app.use(session({
+  key: 'session_cookie_name',
+  secret: process.env.SESSION_SECRET,
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false
+}));
 
 const storage = multer.diskStorage({
     destination: 'uploads/',
