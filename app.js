@@ -19,6 +19,9 @@ const netsQrController = require('./controllers/netsQrController');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
+
 // Set up session middleware
 const sessionStore = new MySQLStore({
   host: process.env.DB_HOST,
