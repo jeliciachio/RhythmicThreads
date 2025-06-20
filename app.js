@@ -20,23 +20,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-const MySQLStore = require('express-mysql-session')(session);
-
-// Set up session middleware
-const sessionStore = new MySQLStore({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
-
-app.use(session({
-  key: 'session_cookie_name',
-  secret: process.env.SESSION_SECRET,
-  store: sessionStore,
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(
+    session({
+        secret: 'your_secret_key', // Replace with a secure key
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false }, // Set to true if using HTTPS
+    })
+);
 
 const storage = multer.diskStorage({
     destination: 'uploads/',
@@ -45,6 +36,13 @@ const storage = multer.diskStorage({
         cb(null, `${Date.now()}.${ext}`); // Save as timestamp + extension
     }
 });
+
+// app.js
+app.use((req, res, next) => {
+  res.locals.MAPS_API_KEY = process.env.MAPS_API_KEY;
+  next();
+});
+
 
 const upload = multer({ storage });
 
@@ -80,13 +78,13 @@ const isAdmin = (req, res, next) => {
 
 
 // Admin route (example)
-app.get('/admin', isAdmin, (req, res) => {
-    res.render('admin');  // Render your admin.ejs page
-});
+//app.get('/admin', isAdmin, (req, res) => {
+ //   res.render('admin');  // Render your admin.ejs page
+//});
 
-app.get('/admin', authController.authenticate, isAdmin, (req, res) => {
-    res.send('Welcome to the admin dashboard');
-});
+//app.get('/admin', authController.authenticate, isAdmin, (req, res) => {
+    //res.send('Welcome to the admin dashboard');
+//});
 
 
 
@@ -143,6 +141,7 @@ app.get('/products/vinyls', productsController.getAllVinyls);
 app.get('/products/vinyls/:id', productsController.getVinylById)
 app.get('/products/:type/:id', productsController.getProductById);
 app.get('/products/whatsnew', productsController.getLatestProducts);
+app.post('/products/whatsnew/rsvp/:id', productsController.rsvpWhatsNew);
 app.post('/products/reviews',isLoggedIn, productsController.addReview);
 
 // Cart routes
@@ -185,6 +184,10 @@ app.post('/payment/confirm', isLoggedIn, transactionController.confirmPayment);
 //Admin profile routes
 app.get('/admin/profile', isAdmin, adminController.getAdminProfile);
 app.post('/admin/profile/update', isAdmin, adminController.updateProfile);
+
+// Admin dashboard route
+app.get('/admin', adminController.getDashboardStats);
+
 // Admin user management routes
 app.get('/admin/manageuser', isAdmin, adminController.getAllUsers);
 
@@ -214,6 +217,8 @@ app.get('/about', usersController.getAbout);
 app.get('/location', usersController.getLocation);
 
 // Start server
-app.listen(4002, () => {
-    console.log('Server is running on http://localhost:4002');
+const PORT = process.env.PORT || 4002;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
+

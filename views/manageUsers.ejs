@@ -167,14 +167,71 @@
                 <td><%= user.userEmail %></td>
                 <td><%= user.userRole %></td>
             </tr>
-        <% }) %>
-    </tbody>
+        <% }) %>    </tbody>
 </table>
+
+<!-- Download Button -->
+<div style="text-align: center; margin: 20px 0;">
+    <button id="downloadBtn" onclick="downloadExcel()" style="
+        background-color: #28a745;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: background-color 0.3s ease;
+    " onmouseover="this.style.backgroundColor='#218838'" onmouseout="this.style.backgroundColor='#28a745'">
+        📊 Download User Data (Excel)
+    </button>
+</div>
+
 </body>
 </html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
   function toggleMenu() {
     const navMenu = document.getElementById("nav-menu");
     navMenu.classList.toggle("show");
+  }
+
+  function downloadExcel() {
+    // Get the user data from the EJS template
+    const userData = [
+      <% users.forEach((user, index) => { %>
+        {
+          "User ID": <%= user.userId %>,
+          "Username": "<%= user.username %>",
+          "Email": "<%= user.userEmail %>",
+          "Role": "<%= user.userRole %>"
+        }<%= index < users.length - 1 ? ',' : '' %>
+      <% }) %>
+    ];
+
+    // Create a new workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(userData);
+
+    // Auto-size columns
+    const colWidths = [
+      { wch: 10 }, // User ID
+      { wch: 20 }, // Username
+      { wch: 30 }, // Email
+      { wch: 15 }  // Role
+    ];
+    ws['!cols'] = colWidths;
+
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Users");
+
+    // Generate current date for filename
+    const today = new Date();
+    const dateStr = today.getFullYear() + '-' + 
+                   String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                   String(today.getDate()).padStart(2, '0');
+
+    // Save the file
+    XLSX.writeFile(wb, `RhythmicThreads_Users_${dateStr}.xlsx`);
   }
 </script>

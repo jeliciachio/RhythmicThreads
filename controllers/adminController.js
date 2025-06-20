@@ -81,19 +81,36 @@ exports.getAdminVinyls = async (req, res) => {
 };
 
 exports.getWhatsNew = async (req, res) => {
-    const query = 'SELECT id, name, description, price, category, createdAt FROM WhatsNew';
-    try {
-        const [products] = await db.query(query);
-        const formattedProducts = products.map(item => ({
-            ...item,
-            price: item.price ? parseFloat(item.price) : 0.00
-        }));
-        res.render('adminWhatsNew', { products: formattedProducts });
-    } catch (err) {
-        console.error("Error fetching What's New products:", err);
-        res.status(500).send("Error fetching What's New products.");
-    }
+  const productQuery = 'SELECT id, name, description, price, category, image, createdAt FROM WhatsNew';
+  const rsvpQuery = `
+    SELECT r.productId, u.username
+    FROM ProductRSVPs r
+    JOIN users u ON r.userId = u.userId
+  `;
+
+  try {
+    const [products] = await db.query(productQuery);
+    const [rsvps] = await db.query(rsvpQuery);
+
+    // Group RSVPs by productId
+    const rsvpMap = {};
+    rsvps.forEach(rsvp => {
+      if (!rsvpMap[rsvp.productId]) rsvpMap[rsvp.productId] = [];
+      rsvpMap[rsvp.productId].push(rsvp.username);
+    });
+
+    const formatted = products.map(p => ({
+      ...p,
+      rsvps: rsvpMap[p.id] || []
+    }));
+
+    res.render('adminWhatsNew', { products: formatted });
+  } catch (err) {
+    console.error("Error fetching What's New products or RSVPs:", err);
+    res.status(500).send("Error fetching data.");
+  }
 };
+
 
 exports.renderEditProductPage = async (req, res) => {
     const { id, type } = req.params;
@@ -112,12 +129,50 @@ exports.renderEditProductPage = async (req, res) => {
     try {
         const [productResults] = await db.query(productQuery, [id]);
         if (productResults.length === 0) return res.status(404).send('Product not found.');
-        res.render('editProduct', { item: productResults[0], type });
+
+        let item = productResults[0];
+
+        if (type === 'Clothes') {
+            item = {
+                id: item.clothingId,
+                name: item.clothingName,
+                description: item.clothingDescription,
+                price: item.clothingPrice,
+                stock: item.clothingStock,
+                image: item.clothingImage,
+                categoryId: item.categoryId,
+                productfilter: item.productfilter
+            };
+        } else if (type === 'Vinyls') {
+            item = {
+                id: item.vinylId,
+                name: item.vinylName,
+                description: item.vinylDescription,
+                price: item.vinylPrice,
+                stock: item.vinylStock,
+                image: item.vinylImage,
+                categoryId: item.categoryId,
+                productfilter: item.productfilter
+            };
+        }
+
+        const [categoryResults] = await db.query('SELECT * FROM categories');
+        const [filterResults] = await db.query('SELECT filterType FROM productfilter');
+        const filters = filterResults.map(row => row.filterType);
+
+        // ✅ Render page with all needed data
+        res.render('editProduct', {
+            item,
+            type,
+            categories: categoryResults,
+            filters
+        });
     } catch (err) {
         console.error('Error fetching product:', err);
         res.status(500).send('Error fetching product.');
     }
 };
+
 
 exports.editProduct = async (req, res) => {
     const { id, type } = req.params;
@@ -217,12 +272,13 @@ exports.deleteProduct = async (req, res) => {
 
     try {
         await db.query(query, [id]);
-        res.redirect('/admin/managewhatsnew');
+        res.redirect(`/admin/manage${type.toLowerCase()}`);
     } catch (err) {
         console.error('Error deleting product:', err);
         res.status(500).send('Error deleting product');
     }
 };
+
 
 exports.getAllTransactions = async (req, res) => {
     const transactionsQuery = `SELECT transactionId, userId, userName, userEmail, transactionDate, itemsPurchased, totalAmount FROM transactions`;
@@ -250,3 +306,49 @@ exports.getAllTransactions = async (req, res) => {
     }
 };
 
+exports.getDashboardStats = async (req, res) => {
+  try {
+    // 1. Product Count
+    const [productRows] = await db.query(`
+      SELECT 'Clothes' AS type, COUNT(*) AS count FROM clothes
+      UNION
+      SELECT 'Vinyls', COUNT(*) FROM vinyls
+    `);
+
+    // 2. Orders per month
+    const [orderRows] = await db.query(`
+      SELECT 
+        DATE_FORMAT(transactionDate, '%b') AS month,
+        COUNT(*) AS orderCount
+      FROM transactions
+      GROUP BY month
+      ORDER BY STR_TO_DATE(month, '%b')
+    `);
+
+    // 3. Sales parsing from itemsPurchased JSON
+    const [salesRaw] = await db.query(`
+      SELECT transactionDate, itemsPurchased FROM transactions
+    `);
+
+    const salesData = {};
+    salesRaw.forEach(({ transactionDate, itemsPurchased }) => {
+      const month = new Date(transactionDate).toLocaleString('default', { month: 'short' });
+      const items = JSON.parse(itemsPurchased);
+      if (!salesData[month]) salesData[month] = { Clothes: 0, Vinyls: 0 };
+
+      items.forEach(item => {
+        if (item.itemType === 'Clothes') salesData[month].Clothes += parseFloat(item.itemPrice);
+        if (item.itemType === 'Vinyls') salesData[month].Vinyls += parseFloat(item.itemPrice);
+      });
+    });
+
+    res.render('admin', {
+      productStats: productRows,
+      orderStats: orderRows,
+      salesStats: salesData
+    });
+  } catch (err) {
+    console.error('Dashboard stats error:', err);
+    res.status(500).send('Error loading dashboard data');
+  }
+};

@@ -17,7 +17,7 @@ exports.getAllClothes = async (req, res) => {
         const [results] = await db.query(query, queryParams);
         const clothes = results.map(item => ({
             ...item,
-            clothingImage: `/images/${item.clothingImage}`
+            clothingImage: `/uploads/${item.clothingImage}`
         }));
         res.render('clothes', { clothes: results, filter });
     } catch (err) {
@@ -58,7 +58,7 @@ exports.getAllVinyls = async (req, res) => {
         const [results] = await db.query(query, queryParams);
         const vinyls = results.map(item => ({
             ...item,
-            vinylImage: `/images/${item.vinylImage}`
+            vinylImage: `/uploads/${item.vinylImage}`
         }));
         res.render('vinyls', { vinyls: results, filter });
     } catch (err) {
@@ -173,16 +173,57 @@ exports.deleteProduct = async (req, res) => {
 // Get the latest products
 exports.getLatestProducts = async (req, res) => {
     try {
-        const [results] = await db.query(`SELECT name, description, price, category, createdAt FROM WhatsNew ORDER BY createdAt DESC`);
+        const [results] = await db.query(`SELECT id, name, description, price, category, image, createdAt FROM WhatsNew ORDER BY createdAt DESC`);
+        
         const formattedProducts = results.map(product => ({
-            ...product,
-            price: product.price ? parseFloat(product.price) : 0.00
+            id: product.id,
+            name: product.name,
+            description: product.description,
+            price: product.price ? parseFloat(product.price) : 0.00,
+            category: product.category,
+            image: product.image,
+            createdAt: product.createdAt
         }));
+
         res.render('whatsnew', { products: formattedProducts });
     } catch (err) {
         res.status(500).json({ error: 'Server error while fetching latest products.' });
     }
 };
+
+
+// RSVP for Whats New
+exports.rsvpWhatsNew = async (req, res) => {
+  const userId = req.session.user?.id;
+  const productId = req.params.id;
+
+  if (!userId) {
+    return res.send(`<script>alert("Login to RSVP."); window.location.href = "/login";</script>`);
+  }
+
+  try {
+    // ✅ Step 1: Check if the user already RSVP'ed this product
+    const [existing] = await db.query(
+      'SELECT * FROM ProductRSVPs WHERE userId = ? AND productId = ?',
+      [userId, productId]
+    );
+
+    if (existing.length > 0) {
+      // ✅ Already RSVP'ed
+      return res.send(`<script>alert("You have already reserved this product."); window.location.href = "/products/whatsnew";</script>`);
+    }
+
+    // ✅ Step 2: Proceed to insert if not RSVP'ed before
+    await db.query('INSERT INTO ProductRSVPs (userId, productId) VALUES (?, ?)', [userId, productId]);
+
+    res.send(`<script>alert("RSVP confirmed!"); window.location.href = "/products/whatsnew";</script>`);
+  } catch (err) {
+    console.error('Error saving RSVP:', err);
+    res.status(500).send('Error saving RSVP');
+  }
+};
+
+
 
 // Add a review
 exports.addReview = async (req, res) => {

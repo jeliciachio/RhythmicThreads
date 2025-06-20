@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Rhythmic Threads - User Page</title>
     <link rel="stylesheet" href="/styles.css">
 <style>
@@ -152,8 +153,133 @@
                         </ul>
                 </nav>
         </section>
+        <section class="admin-charts">
+        <!-- Row 1: Orders Overview -->
+        <div style="width: 800px; margin: 40px auto; text-align: center;">
+            <h3>Total Orders Per Month</h3>
+            <canvas id="ordersChart"></canvas>
+            <p id="totalOrdersText"></p>
+        </div>
+
+
+        <!-- Row 2: Side-by-side charts -->
+        <div style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 40px;">
+            <div style="flex:1; max-width: 500px; margin-bottom: 40px;">
+            <h3>Product Count</h3>
+            <canvas id="productChart"></canvas>
+            </div>
+            <div style="flex:1; max-width: 500px; margin-bottom: 40px;">
+            <h3>Sales Breakdown by Month and Year</h3>
+            <select id="monthFilter" onchange="updateSalesChart()">
+                <option value="Jan">January</option>
+                <option value="Feb">February</option>
+                <option value="Mar">March</option>
+                <option value="Apr">April</option>
+                <option value="May">May</option>
+                <option value="Jun">June</option>
+                <option value="Jul">July</option>
+                <option value="Aug">August</option>
+                <option value="Sep">September</option>
+                <option value="Oct">October</option>
+                <option value="Nov">November</option>
+                <option value="Dec">December</option>
+            </select>
+            <select id="yearFilter" onchange="updateSalesChart()">
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            </select>
+            <canvas id="salesChart"></canvas>
+            </div>
+        </section>
+
+<script>
+
+  const productData = JSON.parse('<%- JSON.stringify(productStats) %>');
+  const ordersData = JSON.parse('<%- JSON.stringify(orderStats) %>');
+  const salesStats = JSON.parse('<%- JSON.stringify(salesStats) %>');
+
+
+  // --- Chart 1: Orders Line Chart ---
+  const orderLabels = ordersData.map(row => row.month);
+  const orderCounts = ordersData.map(row => row.orderCount);
+
+  const ordersChart = new Chart(document.getElementById('ordersChart'), {
+    type: 'line',
+    data: {
+      labels: orderLabels,
+      datasets: [{
+        label: 'Orders per Month',
+        data: orderCounts,
+        fill: false,
+        borderColor: 'blue',
+        tension: 0.3
+      }]
+    }
+  });
+
+  const totalOrders = orderCounts.reduce((a, b) => a + b, 0);
+  document.getElementById('totalOrdersText').innerText = `Total Orders: ${totalOrders}`;
+
+  // --- Chart 2: Product Count Pie Chart ---
+  const productLabels = productData.map(row => row.type);
+  const productCounts = productData.map(row => row.count);
+
+  new Chart(document.getElementById('productChart'), {
+    type: 'pie',
+    data: {
+      labels: productLabels,
+      datasets: [{
+        label: 'Product Count',
+        data: productCounts,
+        backgroundColor: ['#007bff', '#ffcc00']
+      }]
+    }
+  });
+
+  // --- Chart 3: Sales Bar Chart with Month Filter ---
+  let salesChartInstance;
+
+  const allMonths = Object.keys(salesStats);
+  const monthSelect = document.getElementById('monthFilter');
+
+  // Populate month filter dropdown
+  allMonths.forEach(month => {
+    const opt = document.createElement("option");
+    opt.value = month;
+    opt.textContent = month;
+    monthSelect.appendChild(opt);
+  });
+
+    function updateSalesChart() {
+    const selectedMonth = document.getElementById('monthFilter').value;
+    const selectedYear = document.getElementById('yearFilter').value;
+
+    const sales = salesStats[selectedYear]?.[selectedMonth] || { Clothes: 0, Vinyls: 0 };
+
+    if (salesChartInstance) {
+        salesChartInstance.destroy();
+    }
+
+    salesChartInstance = new Chart(document.getElementById('salesChart'), {
+        type: 'bar',
+        data: {
+        labels: ['Clothes', 'Vinyls'],
+        datasets: [{
+            label: `Sales in ${selectedMonth} ${selectedYear}`,
+            data: [sales.Clothes, sales.Vinyls],
+            backgroundColor: ['#28a745', '#ffc107']
+        }]
+        }
+    });
+    }
+    updateSalesChart();
+</script>
+
+</body>
         
-</ul>
-</nav>
 <footer>
         <p>&copy; 2024 RhythmicThreads</p>
+</footer>
+</html>

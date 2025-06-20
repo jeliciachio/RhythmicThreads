@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythmic Threads - Whats New</title>
+  <link rel="stylesheet" href="/styles.css">
 <style>
   /* General styling */
 body {
@@ -252,19 +259,25 @@ select {
   <p>Check out our latest products!</p>
 
   <div class="product-category">
-    <% products.forEach((product) => { %>
-      <div class="card">
-        <% if (product.image) { %>
-          <img src="/images/<%= product.image %>" alt="<%= product.name %>">
-        <% } else { %>
-          <p>No Image Available</p>
-        <% } %>
-        <h3><%= product.name %></h3>
-        <p><%= product.description %></p>
-        <p class="product-price">Price: $<%= product.price.toFixed(2) %></p>
-      </div>
-    <% }); %>
-  </div>
+  <% products.forEach((product) => { %>
+    <div class="card">
+      <% if (product.image) { %>
+        <img src="/uploads/<%= product.image %>" alt="<%= product.name %>">
+      <% } else { %>
+        <p>No Image Available</p>
+      <% } %>
+      <h3><%= product.name %></h3>
+      <p><%= product.description %></p>
+      <p class="product-price">Price: $<%= product.price.toFixed(2) %></p>
+
+      <!-- Add RSVP button -->
+      <form action="/products/whatsnew/rsvp/<%= product.id %>" method="POST">
+        <button class="btn">RSVP This Product</button>
+      </form>
+    </div>
+  <% }); %>
+</div>
+
 </body>
 <script>
   function toggleMenu() {
